@@ -50,3 +50,20 @@
   line-height: 2.5;
   font-size: rem(16px);
 }
+
+.jobs__filters {
+  width: 100%;
+}
+
+.jobs__body {
+  gap: rem(24px);
+  padding-top: rem(24px);
+  padding-bottom: rem(82px);
+}
+
+.jobs__skills {
+  max-width: rem(317px);
+  width: 100%;
+  padding: rem(24px);
+  background-color: #fff;
+}

@@ -1,5 +1,8 @@
-import { Box, Container, Divider, Group } from "@mantine/core";
+import { Box, Container, Divider, Group, Stack } from "@mantine/core";
 import JobsHeader from "./JobsHeader";
+import JobsFilters from "./JobsFilters";
+
+import styles from "./Jobs.module.css";
 
 export default function Jobs() {
   return (
@@ -7,10 +10,13 @@ export default function Jobs() {
       <Box component="section" className="jobs">
         <Box className="jobs__inner">
           <JobsHeader />
-          <Container size={1000}>
-            <Group className="jobs__body"></Group>
-          </Container>
           <Divider color="#0f0f1033" opacity={0.2}></Divider>
+          <Container size={1000}>
+            <Group className={styles.jobs__body}>
+              <JobsFilters />
+              <Stack className="jobs__list"></Stack>
+            </Group>
+          </Container>
         </Box>
       </Box>
     </main>
