@@ -1,0 +1,52 @@
+.jobs__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-block: rem(24px);
+}
+
+.jobs__title {
+  max-width: rem(366px);
+  font-size: rem(26px);
+}
+
+.jobs__title h1 {
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.jobs__title span {
+  font-weight: 500;
+  font-size: rem(20px);
+  opacity: 0.5;
+}
+
+.jobs__search {
+  max-width: rem(508px);
+  width: 100%;
+}
+
+.search-input {
+  flex: 1;
+}
+
+.search-input input {
+  height: 42px;
+  background-color: transparent;
+}
+
+.search-input input::placeholder {
+  line-height: 2.5;
+  font-size: rem(16px);
+}
+
+.search-button {
+  height: rem(42px);
+  padding: 1px 22px;
+  border: none;
+  border-radius: 4px;
+  background-color: var(--mantine-color-shemeColor-7);
+  font-weight: 400;
+  line-height: 2.5;
+  font-size: rem(16px);
+}

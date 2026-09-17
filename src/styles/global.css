@@ -2,8 +2,11 @@ html {
   scrollbar-gutter: stable;
   transition: all 0.4s;
   font-family: var(--mantine-font-family);
+}
+
+body {
   background-color: #f6f6f7;
-  color: #000;
+  color: #0f0f10;
 }
 
 .header {
@@ -36,7 +39,7 @@ html {
 }
 
 .header__inner {
-  padding-block: rem(15px);
+  padding-block: rem(10px);
   padding-inline: rem(20px);
 }
 
