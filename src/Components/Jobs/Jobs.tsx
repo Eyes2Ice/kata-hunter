@@ -1,4 +1,4 @@
-import { Box, Container, Divider, Group, Stack } from "@mantine/core";
+import { Box, Container, Divider, Group } from "@mantine/core";
 import JobsHeader from "./JobsHeader";
 import JobsFilters from "./JobsFilters";
 import JobsList from "./JobsList";
