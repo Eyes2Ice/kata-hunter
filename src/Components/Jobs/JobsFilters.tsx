@@ -5,6 +5,7 @@ import {
   Select,
   Box,
   Title,
+  Stack,
   Button,
   Group,
 } from "@mantine/core";
@@ -13,14 +14,16 @@ import styles from "./Jobs.module.css";
 
 export default function JobsFilters() {
   return (
-    <Box className={styles.jobs__filters}>
-      <Box className={styles.jobs__skills}>
-        <Title order={5}>Ключевые навыки</Title>
-        <Group className={styles["skills-select"]}>
-          <PillsInput>
+    <Stack className={styles.jobs__filters}>
+      <Stack className={styles.jobs__skills}>
+        <Title order={5} className={styles.title}>
+          Ключевые навыки
+        </Title>
+        <Group gap={8}>
+          <PillsInput size="xs" className={styles["skills-input"]}>
             <PillsInput.Field placeholder="Навык" />
           </PillsInput>
-          <Button>
+          <Button className={styles.button}>
             <svg
               width="26"
               height="26"
@@ -38,13 +41,25 @@ export default function JobsFilters() {
             </svg>
           </Button>
         </Group>
-        <PillGroup>
-          <Pill>React</Pill>
-          <Pill>Vue</Pill>
-          <Pill>Angular</Pill>
+        <PillGroup gap={4} component="ul" className={styles.list}>
+          <Pill component="li" withRemoveButton className={styles.item}>
+            JavaScript
+          </Pill>
+          <Pill component="li" withRemoveButton className={styles.item}>
+            React
+          </Pill>
+          <Pill component="li" withRemoveButton className={styles.item}>
+            Redux
+          </Pill>
+          <Pill component="li" withRemoveButton className={styles.item}>
+            ReduxToolkit
+          </Pill>
+          <Pill component="li" withRemoveButton className={styles.item}>
+            Nextjs
+          </Pill>
         </PillGroup>
-      </Box>
-      <Box className="jobs__locations">
+      </Stack>
+      <Box className={styles.jobs__locations}>
         <Select
           placeholder="Все города"
           leftSection={
@@ -73,8 +88,9 @@ export default function JobsFilters() {
               />
             </svg>
           }
+          data={["Все города", "Москва", "Санкт-петербург"]}
         ></Select>
       </Box>
-    </Box>
+    </Stack>
   );
 }

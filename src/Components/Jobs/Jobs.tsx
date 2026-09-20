@@ -1,6 +1,7 @@
 import { Box, Container, Divider, Group, Stack } from "@mantine/core";
 import JobsHeader from "./JobsHeader";
 import JobsFilters from "./JobsFilters";
+import JobsList from "./JobsList";
 
 import styles from "./Jobs.module.css";
 
@@ -14,7 +15,7 @@ export default function Jobs() {
           <Container size={1000}>
             <Group className={styles.jobs__body}>
               <JobsFilters />
-              <Stack className="jobs__list"></Stack>
+              <JobsList />
             </Group>
           </Container>
         </Box>
