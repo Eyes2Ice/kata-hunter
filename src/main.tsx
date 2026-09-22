@@ -10,6 +10,10 @@ import {
   MantineProvider,
   DEFAULT_THEME,
 } from "@mantine/core";
+import { Provider } from "react-redux";
+import { setupStore } from "./store/store.ts";
+
+const store = setupStore();
 
 const shemeColor: MantineColorsTuple = [
   "#edf2ff",
@@ -33,8 +37,10 @@ const theme = createTheme({
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <MantineProvider theme={theme}>
-      <App />
-    </MantineProvider>
+    <Provider store={store}>
+      <MantineProvider theme={theme}>
+        <App />
+      </MantineProvider>
+    </Provider>
   </StrictMode>,
 );

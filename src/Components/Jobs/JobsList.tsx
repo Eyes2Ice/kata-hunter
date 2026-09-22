@@ -1,30 +1,63 @@
-import { Stack, Card, Text, Group, Badge, Button } from "@mantine/core";
+import {
+  Stack,
+  Card,
+  Text,
+  Group,
+  Badge,
+  Button,
+  NumberFormatter,
+} from "@mantine/core";
+import { useTypedDispatch, useTypedSelector } from "@/hooks/redux";
+import { fetchJobs } from "@/reducers/JobsThunk";
+import { SPACE_LABELS } from "./Jobs.types";
 import clsx from "clsx";
 
 import styles from "./Jobs.module.css";
+import { useEffect } from "react";
 
 export default function JobsList() {
+  const dispatch = useTypedDispatch();
+  const jobs = useTypedSelector((store) => store.jobsReducer.jobsList);
+
+  useEffect(() => {
+    dispatch(fetchJobs());
+  }, [dispatch]);
+
   return (
     <Stack className={styles.jobs__list} component="ul">
-      <Card component="li" className={styles.item}>
-        <Text className={styles.title}>Frontend разработчик в стартап</Text>
-        <Group gap={16} mb={16}>
-          <Text lh={1.5} c="#0f0f10">
-            70 000 ₽
-          </Text>
-          <Text fz={14} lh={1.7} c="#0f0f1080">
-            Без опыта
-          </Text>
-        </Group>
-        <Text mb={8} fz={14} lh={1.7} c="#0f0f1080">
-          ТехноСервис
-        </Text>
-        <Badge className={clsx(styles.badge, {})}>ГИБРИД</Badge>
-        <Text mb={16} lh={1.5} c="#0f0f10">
-          Замоскворечье
-        </Text>
-        <Button className={styles.button}>Смотреть вакансию</Button>
-      </Card>
+      {jobs.map((job) => {
+        return (
+          <Card component="li" className={styles.item} key={job.id}>
+            <Text className={styles.title}>{job.name}</Text>
+            <Group gap={16} mb={16}>
+              <NumberFormatter
+                value={job.salary}
+                suffix=" ₽"
+                thousandSeparator=" "
+              />
+              <Text fz={14} lh={1.7} c="#0f0f1080">
+                {job.experience}
+              </Text>
+            </Group>
+            <Text mb={8} fz={14} lh={1.7} c="#0f0f1080">
+              {job.companyName}
+            </Text>
+            <Badge
+              className={clsx(styles.badge, {
+                [styles["badge-office"]]: job.space === "office",
+                [styles["badge-remote"]]: job.space === "remote",
+                [styles["badge-hybrid"]]: job.space === "hybrid",
+              })}
+            >
+              {SPACE_LABELS[job.space]}
+            </Badge>
+            <Text mb={16} lh={1.5} c="#0f0f10">
+              {job.city}
+            </Text>
+            <Button className={styles.button}>Смотреть вакансию</Button>
+          </Card>
+        );
+      })}
     </Stack>
   );
 }

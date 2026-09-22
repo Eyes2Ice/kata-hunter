@@ -139,11 +139,26 @@
 
     .badge {
       margin-bottom: rem(5px);
+      border-radius: 2px;
       font-weight: 700;
       line-height: 1.56;
       font-size: 9px;
-      color: #fff;
       text-transform: uppercase;
+    }
+
+    .badge-office {
+      color: #0f0f1080;
+      background-color: #0f0f101a;
+    }
+
+    .badge-remote {
+      color: #fff;
+      background-color: var(--mantine-color-shemeColor-7);
+    }
+
+    .badge-hybrid {
+      color: #fff;
+      background-color: #0f0f10;
     }
 
     .button {
