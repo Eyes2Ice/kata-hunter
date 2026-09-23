@@ -15,7 +15,7 @@ const initialState: JobsState = {
   jobsList: [],
   searchQuery: null,
   skills: ["JavaScript", "React", "Redux", "Python"],
-  city: null,
+  city: "Все города",
   isLoading: false,
   error: null,
 };
@@ -26,6 +26,18 @@ export const jobsSlice = createSlice({
   reducers: {
     addSearchQuery: (state, action: PayloadAction<string>) => {
       state.searchQuery = action.payload;
+    },
+    addSkill: (state, action: PayloadAction<string>) => {
+      const trimmedSkill = action.payload.trim();
+      if (trimmedSkill && !state.skills.includes(trimmedSkill)) {
+        state.skills.push(trimmedSkill);
+      }
+    },
+    removeSkill: (state, action: PayloadAction<string>) => {
+      state.skills = state.skills.filter((skill) => skill !== action.payload);
+    },
+    setCity: (state, action: PayloadAction<string | null>) => {
+      state.city = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -44,6 +56,7 @@ export const jobsSlice = createSlice({
   },
 });
 
-export const { addSearchQuery } = jobsSlice.actions;
+export const { addSearchQuery, addSkill, removeSkill, setCity } =
+  jobsSlice.actions;
 
 export default jobsSlice.reducer;

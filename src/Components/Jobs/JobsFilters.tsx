@@ -11,13 +11,27 @@ import {
 } from "@mantine/core";
 
 import styles from "./Jobs.module.css";
-import { useTypedSelector } from "@/hooks/redux";
-import { nanoid } from "nanoid";
+import { useTypedDispatch, useTypedSelector } from "@/hooks/redux";
+import { useState } from "react";
+import { addSkill, removeSkill, setCity } from "@/reducers/JobsSlice";
 
 export default function JobsFilters() {
+  const [skillInput, setSkillInput] = useState("");
+  const dispatch = useTypedDispatch();
+
   const currentSkills = useTypedSelector((store) => {
     return store.jobsReducer.skills;
   });
+  const currentCity = useTypedSelector((store) => {
+    return store.jobsReducer.city;
+  });
+
+  const handleAddSkill = () => {
+    if (skillInput.trim()) {
+      dispatch(addSkill(skillInput));
+      setSkillInput("");
+    }
+  };
 
   return (
     <Stack className={styles.jobs__filters}>
@@ -27,9 +41,14 @@ export default function JobsFilters() {
         </Title>
         <Group gap={8}>
           <PillsInput size="xs" className={styles["skills-input"]}>
-            <PillsInput.Field placeholder="Навык" />
+            <PillsInput.Field
+              placeholder="Навык"
+              value={skillInput}
+              onChange={(e) => setSkillInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleAddSkill()}
+            />
           </PillsInput>
-          <Button className={styles.button}>
+          <Button className={styles.button} onClick={handleAddSkill}>
             <svg
               width="26"
               height="26"
@@ -51,9 +70,10 @@ export default function JobsFilters() {
           {currentSkills.map((skill) => {
             return (
               <Pill
-                key={nanoid(10)}
+                key={skill}
                 component="li"
                 withRemoveButton
+                onRemove={() => dispatch(removeSkill(skill))}
                 className={styles.item}
               >
                 {skill}
@@ -65,6 +85,8 @@ export default function JobsFilters() {
       <Box className={styles.jobs__locations}>
         <Select
           placeholder="Все города"
+          value={currentCity}
+          onChange={(value) => dispatch(setCity(value))}
           leftSection={
             <svg
               width="16"
