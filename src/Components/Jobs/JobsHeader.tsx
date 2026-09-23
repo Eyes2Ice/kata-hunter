@@ -9,8 +9,14 @@ import {
 } from "@mantine/core";
 
 import styles from "@/Components/Jobs/Jobs.module.css";
+import { useTypedDispatch } from "@/hooks/redux";
+import { addSearchQuery } from "@/reducers/JobsSlice";
+import { useState } from "react";
 
 export default function JobsHeader() {
+  const dispatch = useTypedDispatch();
+  const [searchString, setSearchString] = useState("");
+
   return (
     <Container size={1000}>
       <Box component="header" className={styles.jobs__header}>
@@ -20,6 +26,9 @@ export default function JobsHeader() {
         </Title>
         <Group className={styles.jobs__search}>
           <TextInput
+            onChange={(e) => {
+              setSearchString(e.currentTarget.value);
+            }}
             className={styles["search-input"]}
             leftSection={
               <svg
@@ -41,7 +50,12 @@ export default function JobsHeader() {
             }
             placeholder="Должность или название компании"
           ></TextInput>
-          <Button className={styles["search-button"]}>Найти</Button>
+          <Button
+            onClick={() => dispatch(addSearchQuery(searchString))}
+            className={styles["search-button"]}
+          >
+            Найти
+          </Button>
         </Group>
       </Box>
     </Container>

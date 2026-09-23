@@ -11,8 +11,14 @@ import {
 } from "@mantine/core";
 
 import styles from "./Jobs.module.css";
+import { useTypedSelector } from "@/hooks/redux";
+import { nanoid } from "nanoid";
 
 export default function JobsFilters() {
+  const currentSkills = useTypedSelector((store) => {
+    return store.jobsReducer.skills;
+  });
+
   return (
     <Stack className={styles.jobs__filters}>
       <Stack className={styles.jobs__skills}>
@@ -42,21 +48,18 @@ export default function JobsFilters() {
           </Button>
         </Group>
         <PillGroup gap={4} component="ul" className={styles.list}>
-          <Pill component="li" withRemoveButton className={styles.item}>
-            JavaScript
-          </Pill>
-          <Pill component="li" withRemoveButton className={styles.item}>
-            React
-          </Pill>
-          <Pill component="li" withRemoveButton className={styles.item}>
-            Redux
-          </Pill>
-          <Pill component="li" withRemoveButton className={styles.item}>
-            ReduxToolkit
-          </Pill>
-          <Pill component="li" withRemoveButton className={styles.item}>
-            Nextjs
-          </Pill>
+          {currentSkills.map((skill) => {
+            return (
+              <Pill
+                key={nanoid(10)}
+                component="li"
+                withRemoveButton
+                className={styles.item}
+              >
+                {skill}
+              </Pill>
+            );
+          })}
         </PillGroup>
       </Stack>
       <Box className={styles.jobs__locations}>

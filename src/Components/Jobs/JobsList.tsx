@@ -6,6 +6,7 @@ import {
   Badge,
   Button,
   NumberFormatter,
+  Loader,
 } from "@mantine/core";
 import { useTypedDispatch, useTypedSelector } from "@/hooks/redux";
 import { fetchJobs } from "@/reducers/JobsThunk";
@@ -14,10 +15,11 @@ import clsx from "clsx";
 
 import styles from "./Jobs.module.css";
 import { useEffect } from "react";
+import { selectFilteredJobs } from "@/reducers/JobsSelectors";
 
 export default function JobsList() {
   const dispatch = useTypedDispatch();
-  const jobs = useTypedSelector((store) => store.jobsReducer.jobsList);
+  const jobs = useTypedSelector(selectFilteredJobs);
 
   useEffect(() => {
     dispatch(fetchJobs());
@@ -25,6 +27,14 @@ export default function JobsList() {
 
   return (
     <Stack className={styles.jobs__list} component="ul">
+      {useTypedSelector((store) => store.jobsReducer.isLoading) && (
+        <Loader
+          color="var(--mantine-color-shemeColor-7)"
+          size="xl"
+          type="dots"
+          className={styles.loader}
+        />
+      )}
       {jobs.map((job) => {
         return (
           <Card component="li" className={styles.item} key={job.id}>

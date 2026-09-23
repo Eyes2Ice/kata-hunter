@@ -4,12 +4,18 @@ import { fetchJobs } from "./JobsThunk";
 
 interface JobsState {
   jobsList: Job[];
+  searchQuery: string | null;
+  skills: string[];
+  city: string | null;
   isLoading: boolean;
   error: string | null;
 }
 
 const initialState: JobsState = {
   jobsList: [],
+  searchQuery: null,
+  skills: ["JavaScript", "React", "Redux", "Python"],
+  city: null,
   isLoading: false,
   error: null,
 };
@@ -17,7 +23,11 @@ const initialState: JobsState = {
 export const jobsSlice = createSlice({
   name: "jobs",
   initialState,
-  reducers: {},
+  reducers: {
+    addSearchQuery: (state, action: PayloadAction<string>) => {
+      state.searchQuery = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchJobs.pending, (state) => {
       state.isLoading = true;
@@ -33,5 +43,7 @@ export const jobsSlice = createSlice({
     });
   },
 });
+
+export const { addSearchQuery } = jobsSlice.actions;
 
 export default jobsSlice.reducer;

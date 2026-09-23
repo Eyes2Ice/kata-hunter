@@ -87,7 +87,7 @@
   input {
     line-height: 2.33;
     font-size: 12px;
-    color: #0f0f104d;
+    color: #111;
   }
 
   .button {
@@ -123,6 +123,7 @@
 }
 
 .jobs__list {
+  justify-content: center;
   flex: 1;
 
   .item {
@@ -176,4 +177,9 @@
       }
     }
   }
+}
+
+.loader {
+  align-self: center;
+  margin-top: 25vh;
 }
