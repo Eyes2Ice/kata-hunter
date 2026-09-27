@@ -7,6 +7,7 @@ import {
   Button,
   NumberFormatter,
   Loader,
+  Pagination,
 } from "@mantine/core";
 import { useTypedDispatch, useTypedSelector } from "@/hooks/redux";
 import { fetchJobs } from "@/reducers/JobsThunk";
@@ -26,48 +27,51 @@ export default function JobsList() {
   }, [dispatch]);
 
   return (
-    <Stack className={styles.jobs__list} component="ul">
-      {useTypedSelector((store) => store.jobsReducer.isLoading) && (
-        <Loader
-          color="var(--mantine-color-shemeColor-7)"
-          size="xl"
-          type="dots"
-          className={styles.loader}
-        />
-      )}
-      {jobs.map((job) => {
-        return (
-          <Card component="li" className={styles.item} key={job.id}>
-            <Text className={styles.title}>{job.name}</Text>
-            <Group gap={16} mb={16}>
-              <NumberFormatter
-                value={job.salary}
-                suffix=" ₽"
-                thousandSeparator=" "
-              />
-              <Text fz={14} lh={1.7} c="#0f0f1080">
-                {job.experience}
+    <Stack style={{ width: "100%", alignItems: "center" }}>
+      <Stack className={styles.jobs__list} component="ul">
+        {useTypedSelector((store) => store.jobsReducer.isLoading) && (
+          <Loader
+            color="var(--mantine-color-shemeColor-7)"
+            size="xl"
+            type="dots"
+            className={styles.loader}
+          />
+        )}
+        {jobs.map((job) => {
+          return (
+            <Card component="li" className={styles.item} key={job.id}>
+              <Text className={styles.title}>{job.name}</Text>
+              <Group gap={16} mb={16}>
+                <NumberFormatter
+                  value={job.salary}
+                  suffix=" ₽"
+                  thousandSeparator=" "
+                />
+                <Text fz={14} lh={1.7} c="#0f0f1080">
+                  {job.experience}
+                </Text>
+              </Group>
+              <Text mb={8} fz={14} lh={1.7} c="#0f0f1080">
+                {job.companyName}
               </Text>
-            </Group>
-            <Text mb={8} fz={14} lh={1.7} c="#0f0f1080">
-              {job.companyName}
-            </Text>
-            <Badge
-              className={clsx(styles.badge, {
-                [styles["badge-office"]]: job.space === "office",
-                [styles["badge-remote"]]: job.space === "remote",
-                [styles["badge-hybrid"]]: job.space === "hybrid",
-              })}
-            >
-              {SPACE_LABELS[job.space]}
-            </Badge>
-            <Text mb={16} lh={1.5} c="#0f0f10">
-              {job.city}
-            </Text>
-            <Button className={styles.button}>Смотреть вакансию</Button>
-          </Card>
-        );
-      })}
+              <Badge
+                className={clsx(styles.badge, {
+                  [styles["badge-office"]]: job.space === "office",
+                  [styles["badge-remote"]]: job.space === "remote",
+                  [styles["badge-hybrid"]]: job.space === "hybrid",
+                })}
+              >
+                {SPACE_LABELS[job.space]}
+              </Badge>
+              <Text mb={16} lh={1.5} c="#0f0f10">
+                {job.city}
+              </Text>
+              <Button className={styles.button}>Смотреть вакансию</Button>
+            </Card>
+          );
+        })}
+      </Stack>
+      <Pagination total={10} radius="sm" withEdges />
     </Stack>
   );
 }

@@ -125,6 +125,7 @@
 .jobs__list {
   justify-content: center;
   flex: 1;
+  width: 100%;
 
   .item {
     padding: rem(24px);
