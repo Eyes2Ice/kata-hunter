@@ -31,6 +31,7 @@ export default function JobsList() {
       <Stack className={styles.jobs__list} component="ul">
         {useTypedSelector((store) => store.jobsReducer.isLoading) && (
           <Loader
+            data-testid="loader"
             color="var(--mantine-color-shemeColor-7)"
             size="xl"
             type="dots"
