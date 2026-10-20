@@ -4,11 +4,11 @@ import {
   Text,
   Group,
   Badge,
-  Button,
   NumberFormatter,
   Loader,
   Pagination,
 } from "@mantine/core";
+import { Link } from "react-router-dom";
 import { useTypedDispatch, useTypedSelector } from "@/hooks/redux";
 import { fetchJobs } from "@/reducers/JobsThunk";
 import { SPACE_LABELS } from "./Jobs.types";
@@ -67,12 +67,14 @@ export default function JobsList() {
               <Text mb={16} lh={1.5} c="#0f0f10">
                 {job.city}
               </Text>
-              <Button className={styles.button}>Смотреть вакансию</Button>
+              <Link to="/single-job" className={styles.button}>
+                Смотреть вакансию
+              </Link>
             </Card>
           );
         })}
       </Stack>
-      <Pagination total={10} radius="sm" withEdges />
+      <Pagination total={5} radius="sm" withEdges />
     </Stack>
   );
 }

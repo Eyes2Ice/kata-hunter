@@ -1,13 +1,17 @@
 import "./App.css";
-import Header from "./Components/Header/Header";
-import Jobs from "./Components/Jobs/Jobs";
+import Layout from "./Components/Layout/Layout";
+import { Route, Routes } from "react-router-dom";
+import HomePage from "./pages/home";
+import SingleJobPage from "./pages/single-job";
 
 function App() {
   return (
-    <>
-      <Header></Header>
-      <Jobs></Jobs>
-    </>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<HomePage />} />
+        <Route path="single-job" element={<SingleJobPage />} />
+      </Route>
+    </Routes>
   );
 }
 
