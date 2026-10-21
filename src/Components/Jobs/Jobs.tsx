@@ -2,10 +2,13 @@ import { Box, Container, Divider, Group } from "@mantine/core";
 import JobsHeader from "./JobsHeader";
 import JobsFilters from "./JobsFilters";
 import JobsList from "./JobsList";
+import { useJobsSearchParams } from "@/hooks/useJobsSearchParams";
 
 import styles from "./Jobs.module.css";
 
 export default function Jobs() {
+  useJobsSearchParams();
+
   return (
     <main>
       <Box component="section" className="jobs">

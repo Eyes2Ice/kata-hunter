@@ -1,16 +1,17 @@
 import { Box, Group, Image, Text, NavLink } from "@mantine/core";
 import logo from "@/assets/img/logo/logo.png";
+import { Link } from "react-router-dom";
 
 export default function Header() {
   return (
     <Box component="header" className="header">
       <Group className="header__inner">
-        <a href="/" className="logo">
+        <Link to="/" className="logo">
           <Image src={logo} className="logo__image"></Image>
           <Text fw={600} lh={1.5} className="logo__text">
             .FrontEnd
           </Text>
-        </a>
+        </Link>
         <Group component="nav" className="nav header__nav">
           <NavLink href="#" label="Вакансии FE" className="nav__link" active />
           <NavLink

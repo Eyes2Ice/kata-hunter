@@ -184,3 +184,51 @@
   align-self: center;
   margin-top: 25vh;
 }
+
+/* Single job page */
+.job {
+  max-width: 658px;
+  width: 100%;
+  .title {
+    margin-bottom: rem(8px);
+    font-weight: 600;
+    line-height: 1.2;
+    font-size: 20px;
+    color: var(--mantine-color-shemeColor-9);
+  }
+
+  .badge {
+    margin-bottom: rem(5px);
+    border-radius: 2px;
+    font-weight: 700;
+    line-height: 1.56;
+    font-size: 9px;
+    text-transform: uppercase;
+  }
+
+  .badge-office {
+    color: #0f0f1080;
+    background-color: #0f0f101a;
+  }
+
+  .badge-remote {
+    color: #fff;
+    background-color: var(--mantine-color-shemeColor-7);
+  }
+
+  .badge-hybrid {
+    color: #fff;
+    background-color: #0f0f10;
+  }
+}
+
+.job-body {
+  gap: 0;
+  max-width: 658px;
+  width: 100%;
+  border-radius: 12px;
+  padding: 24px;
+  background-color: #fff;
+
+  line-height: 1.5;
+}

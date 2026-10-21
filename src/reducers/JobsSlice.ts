@@ -39,6 +39,14 @@ export const jobsSlice = createSlice({
     setCity: (state, action: PayloadAction<string | null>) => {
       state.city = action.payload;
     },
+    setFiltersFromUrl: (
+      state,
+      action: PayloadAction<Pick<JobsState, "searchQuery" | "skills" | "city">>,
+    ) => {
+      state.searchQuery = action.payload.searchQuery;
+      state.skills = action.payload.skills;
+      state.city = action.payload.city;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchJobs.pending, (state) => {
@@ -56,7 +64,12 @@ export const jobsSlice = createSlice({
   },
 });
 
-export const { addSearchQuery, addSkill, removeSkill, setCity } =
-  jobsSlice.actions;
+export const {
+  addSearchQuery,
+  addSkill,
+  removeSkill,
+  setCity,
+  setFiltersFromUrl,
+} = jobsSlice.actions;
 
 export default jobsSlice.reducer;

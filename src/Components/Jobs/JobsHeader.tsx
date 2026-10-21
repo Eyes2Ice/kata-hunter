@@ -9,13 +9,24 @@ import {
 } from "@mantine/core";
 
 import styles from "@/Components/Jobs/Jobs.module.css";
-import { useTypedDispatch } from "@/hooks/redux";
+import { useTypedDispatch, useTypedSelector } from "@/hooks/redux";
 import { addSearchQuery } from "@/reducers/JobsSlice";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function JobsHeader() {
   const dispatch = useTypedDispatch();
+  const searchQuery = useTypedSelector(
+    (state) => state.jobsReducer.searchQuery,
+  );
   const [searchString, setSearchString] = useState("");
+
+  useEffect(() => {
+    setSearchString(searchQuery ?? "");
+  }, [searchQuery]);
+
+  const handleSearch = () => {
+    dispatch(addSearchQuery(searchString));
+  };
 
   return (
     <Container size={1000}>
@@ -26,9 +37,8 @@ export default function JobsHeader() {
         </Title>
         <Group className={styles.jobs__search}>
           <TextInput
-            onChange={(e) => {
-              setSearchString(e.currentTarget.value);
-            }}
+            value={searchString}
+            onChange={(event) => setSearchString(event.currentTarget.value)}
             className={styles["search-input"]}
             leftSection={
               <svg
@@ -50,10 +60,7 @@ export default function JobsHeader() {
             }
             placeholder="Должность или название компании"
           ></TextInput>
-          <Button
-            onClick={() => dispatch(addSearchQuery(searchString))}
-            className={styles["search-button"]}
-          >
+          <Button onClick={handleSearch} className={styles["search-button"]}>
             Найти
           </Button>
         </Group>

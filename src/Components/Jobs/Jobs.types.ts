@@ -1,6 +1,7 @@
 export interface ServerJob {
   id: number;
   company_name: string;
+  about_company?: string;
   name: string;
   city: string;
   salary: string;
@@ -9,6 +10,7 @@ export interface ServerJob {
   space: string;
   skills: string;
   experience: string;
+  description?: string;
 }
 
 export interface Job {

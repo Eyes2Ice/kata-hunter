@@ -49,7 +49,9 @@ export default function JobsList() {
                   thousandSeparator=" "
                 />
                 <Text fz={14} lh={1.7} c="#0f0f1080">
-                  {job.experience}
+                  {job.experience === "Без опыта"
+                    ? "Без опыта"
+                    : `Опыт: ${job.experience}`}
                 </Text>
               </Group>
               <Text mb={8} fz={14} lh={1.7} c="#0f0f1080">
@@ -67,7 +69,7 @@ export default function JobsList() {
               <Text mb={16} lh={1.5} c="#0f0f10">
                 {job.city}
               </Text>
-              <Link to="/single-job" className={styles.button}>
+              <Link to={`/${job.id}`} className={styles.button}>
                 Смотреть вакансию
               </Link>
             </Card>
