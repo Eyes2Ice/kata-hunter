@@ -69,7 +69,7 @@ export default function JobsList() {
               <Text mb={16} lh={1.5} c="#0f0f10">
                 {job.city}
               </Text>
-              <Link to={`/${job.id}`} className={styles.button}>
+              <Link to={`/vacancies/${job.id}`} className={styles.button}>
                 Смотреть вакансию
               </Link>
             </Card>
