@@ -40,7 +40,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider store={store}>
       <MantineProvider theme={theme}>
-        <BrowserRouter basename={import.meta.env.DEV ? "" : "/vacancies"}>
+        <BrowserRouter basename={import.meta.env.DEV ? "" : "/kata-hunter"}>
           <App />
         </BrowserRouter>
       </MantineProvider>

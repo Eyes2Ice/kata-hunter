@@ -5,7 +5,7 @@ import path from "path";
 export default defineConfig(({ command }) => {
   return {
     plugins: [react()],
-    base: command === "serve" ? "/" : "/vacancies/",
+    base: command === "serve" ? "/" : "/kata-hunter/",
     resolve: {
       alias: {
         "@": path.resolve(import.meta.dirname, "./src"),
