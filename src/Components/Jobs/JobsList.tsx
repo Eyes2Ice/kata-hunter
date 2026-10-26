@@ -76,7 +76,9 @@ export default function JobsList() {
           );
         })}
       </Stack>
-      <Pagination total={5} radius="sm" withEdges />
+      {useTypedSelector((store) => !store.jobsReducer.isLoading) && (
+        <Pagination total={5} radius="sm" withEdges />
+      )}
     </Stack>
   );
 }

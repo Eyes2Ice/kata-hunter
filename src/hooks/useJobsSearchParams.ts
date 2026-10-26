@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { useTypedDispatch, useTypedSelector } from "@/hooks/redux";
@@ -9,7 +9,8 @@ const DEFAULT_CITY = "Все города";
 
 export function useJobsSearchParams() {
   const dispatch = useTypedDispatch();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialSearchParams = useRef(searchParams);
 
   const searchQuery = useTypedSelector(
     (state) => state.jobsReducer.searchQuery,
@@ -20,7 +21,7 @@ export function useJobsSearchParams() {
   const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+    const params = initialSearchParams.current;
 
     const hasFilters =
       params.has("searchQuery") || params.has("skills") || params.has("city");
@@ -66,8 +67,6 @@ export function useJobsSearchParams() {
       return;
     }
 
-    const queryString = nextParams.toString();
-    const newSuffix = queryString ? `?${queryString}` : "";
-    window.history.pushState(null, "", window.location.pathname + newSuffix);
-  }, [initialized, searchQuery, skills, city, searchParams]);
+    setSearchParams(nextParams, { replace: true });
+  }, [initialized, searchQuery, skills, city, searchParams, setSearchParams]);
 }

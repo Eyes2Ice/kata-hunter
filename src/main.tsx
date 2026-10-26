@@ -12,7 +12,7 @@ import {
 } from "@mantine/core";
 import { Provider } from "react-redux";
 import { setupStore } from "./store/store.ts";
-import { BrowserRouter } from "react-router";
+import { HashRouter } from "react-router";
 
 const store = setupStore();
 
@@ -40,9 +40,9 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider store={store}>
       <MantineProvider theme={theme}>
-        <BrowserRouter basename={import.meta.env.DEV ? "" : "/kata-hunter"}>
+        <HashRouter>
           <App />
-        </BrowserRouter>
+        </HashRouter>
       </MantineProvider>
     </Provider>
   </StrictMode>,
