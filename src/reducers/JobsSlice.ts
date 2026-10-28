@@ -6,7 +6,6 @@ interface JobsState {
   jobsList: Job[];
   searchQuery: string | null;
   skills: string[];
-  city: string | null;
   isLoading: boolean;
   error: string | null;
 }
@@ -15,7 +14,6 @@ const initialState: JobsState = {
   jobsList: [],
   searchQuery: null,
   skills: ["JavaScript", "React", "Redux", "Python"],
-  city: "Все города",
   isLoading: false,
   error: null,
 };
@@ -36,16 +34,12 @@ export const jobsSlice = createSlice({
     removeSkill: (state, action: PayloadAction<string>) => {
       state.skills = state.skills.filter((skill) => skill !== action.payload);
     },
-    setCity: (state, action: PayloadAction<string | null>) => {
-      state.city = action.payload;
-    },
     setFiltersFromUrl: (
       state,
-      action: PayloadAction<Pick<JobsState, "searchQuery" | "skills" | "city">>,
+      action: PayloadAction<Pick<JobsState, "searchQuery" | "skills">>,
     ) => {
       state.searchQuery = action.payload.searchQuery;
       state.skills = action.payload.skills;
-      state.city = action.payload.city;
     },
   },
   extraReducers: (builder) => {
@@ -64,12 +58,7 @@ export const jobsSlice = createSlice({
   },
 });
 
-export const {
-  addSearchQuery,
-  addSkill,
-  removeSkill,
-  setCity,
-  setFiltersFromUrl,
-} = jobsSlice.actions;
+export const { addSearchQuery, addSkill, removeSkill, setFiltersFromUrl } =
+  jobsSlice.actions;
 
 export default jobsSlice.reducer;

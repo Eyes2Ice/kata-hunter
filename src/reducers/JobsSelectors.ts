@@ -4,11 +4,15 @@ import { type Job } from "@/Components/Jobs/Jobs.types";
 
 const selectSearchQuery = (state: RootState) => state.jobsReducer.searchQuery;
 const selectSkills = (state: RootState) => state.jobsReducer.skills;
-const selectCity = (state: RootState) => state.jobsReducer.city;
 const selectJobsList = (state: RootState) => state.jobsReducer.jobsList;
 
 export const selectFilteredJobs = createSelector(
-  [selectJobsList, selectSearchQuery, selectSkills, selectCity],
+  [
+    selectJobsList,
+    selectSearchQuery,
+    selectSkills,
+    (_state: RootState, city: string) => city,
+  ],
   (jobsList, searchQuery, skills, city) => {
     if (!jobsList.length) return [];
 
@@ -34,7 +38,7 @@ export const selectFilteredJobs = createSelector(
         if (!hasMatchingSkill) return false;
       }
 
-      if (city && city !== "Все города") {
+      if (city) {
         const jobCity = (job.city || "").toLowerCase();
         const targetCity = city.trim().toLocaleLowerCase();
 

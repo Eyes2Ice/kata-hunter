@@ -1,12 +1,17 @@
 import { Box, Container, Divider, Group } from "@mantine/core";
 import JobsHeader from "./JobsHeader";
-import JobsFilters from "./JobsFilters";
+import JobsSkills from "./JobsSkills";
 import JobsList from "./JobsList";
 import { useJobsSearchParams } from "@/hooks/useJobsSearchParams";
 
 import styles from "./Jobs.module.css";
+import JobsLocation from "./JobsLocation";
 
-export default function Jobs() {
+interface JobsProps {
+  city: string;
+}
+
+export default function Jobs({ city }: JobsProps) {
   useJobsSearchParams();
 
   return (
@@ -16,9 +21,10 @@ export default function Jobs() {
           <JobsHeader />
           <Divider color="#0f0f1033" opacity={0.2}></Divider>
           <Container size={1000}>
+            <JobsLocation />
             <Group className={styles.jobs__body}>
-              <JobsFilters />
-              <JobsList />
+              <JobsSkills />
+              <JobsList city={city} />
             </Group>
           </Container>
         </Box>

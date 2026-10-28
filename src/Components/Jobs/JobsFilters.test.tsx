@@ -1,196 +1,246 @@
-import { describe, it, expect } from "vitest";
-import { screen, waitFor } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
+import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import JobsFilters from "@/Components/Jobs/JobsFilters";
-import { customRender } from "@/__tests__/utils/render";
+import { renderApp } from "@/__tests__/utils/render";
 
-describe("Тесты добавления и удаление навыков", () => {
-  it("Рендер исходных навыков", async () => {
-    const { store } = customRender(<JobsFilters />, {
-      preloadedState: {
-        jobsReducer: {
-          jobsList: [],
-          searchQuery: null,
-          skills: ["JavaScript", "React", "Redux", "Python"],
-          city: "Все города",
-          isLoading: false,
-          error: null,
-        },
-      },
+function getSearchParams(search: string) {
+  return new URLSearchParams(search);
+}
+
+describe("Фильтрация вакансий", () => {
+  describe("Поиск", () => {
+    it("фильтрует список по компании и сохраняет запрос в URL", async () => {
+      const user = userEvent.setup();
+      const { router } = renderApp("/vacancies/moscow");
+
+      await screen.findByText("Junior Frontend Developer");
+
+      const searchInput = screen.getByPlaceholderText(
+        "Должность или название компании",
+      );
+
+      await user.type(searchInput, "KataCorp");
+      await user.click(screen.getByRole("button", { name: "Найти" }));
+
+      await waitFor(() => {
+        expect(
+          screen.getByText("Junior Frontend Developer"),
+        ).toBeInTheDocument();
+        expect(
+          screen.queryByText("Senior Python Developer"),
+        ).not.toBeInTheDocument();
+        expect(
+          getSearchParams(router.state.location.search).get("searchQuery"),
+        ).toBe("KataCorp");
+      });
     });
 
-    await waitFor(() => {
+    it("очистка поиска возвращает полный список и убирает параметр", async () => {
+      const user = userEvent.setup();
+      const { router } = renderApp(
+        "/vacancies/moscow?searchQuery=KataCorp",
+      );
+
+      await screen.findByText("Junior Frontend Developer");
+
+      const searchInput = screen.getByPlaceholderText(
+        "Должность или название компании",
+      );
+
+      await waitFor(() => expect(searchInput).toHaveValue("KataCorp"));
+
+      await user.clear(searchInput);
+      await user.click(screen.getByRole("button", { name: "Найти" }));
+
+      await waitFor(() => {
+        expect(
+          screen.getByText("Senior Python Developer"),
+        ).toBeInTheDocument();
+        expect(
+          getSearchParams(router.state.location.search).get("searchQuery"),
+        ).toBeNull();
+      });
+    });
+  });
+
+  describe("Навыки", () => {
+    it("показывает навыки по умолчанию и не добавляет город в URL", async () => {
+      const { router } = renderApp("/vacancies/moscow");
+
+      await screen.findByText("Junior Frontend Developer");
+
+      await waitFor(() => {
+        const params = getSearchParams(router.state.location.search);
+
+        expect(params.getAll("skills")).toEqual([
+          "JavaScript",
+          "React",
+          "Redux",
+          "Python",
+        ]);
+        expect(params.has("city")).toBe(false);
+      });
+
       expect(screen.getByText("JavaScript")).toBeInTheDocument();
       expect(screen.getByText("React")).toBeInTheDocument();
       expect(screen.getByText("Redux")).toBeInTheDocument();
       expect(screen.getByText("Python")).toBeInTheDocument();
     });
-    expect(store.getState().jobsReducer.skills).toHaveLength(4);
-  });
 
-  it("Навык из инпута должен добавляться по кнопке", async () => {
-    const user = userEvent.setup();
-    const { store } = customRender(<JobsFilters />, {
-      preloadedState: {
-        jobsReducer: {
-          jobsList: [],
-          searchQuery: null,
-          skills: [],
-          city: "Все города",
-          isLoading: false,
-          error: null,
-        },
-      },
+    it("добавляет навык по кнопке, фильтрует список и обновляет URL", async () => {
+      const user = userEvent.setup();
+      const { router } = renderApp("/vacancies/moscow?skills=React");
+
+      await screen.findByText("Junior Frontend Developer");
+      expect(
+        screen.queryByText("Senior Python Developer"),
+      ).not.toBeInTheDocument();
+
+      await user.type(screen.getByPlaceholderText("Навык"), "TypeScript");
+      await user.click(
+        screen.getByRole("button", { name: "Добавить навык" }),
+      );
+
+      await waitFor(() => {
+        const params = getSearchParams(router.state.location.search);
+        const skills = params.getAll("skills");
+
+        expect(
+          screen.getByText("Senior Python Developer"),
+        ).toBeInTheDocument();
+        expect(skills).toContain("React");
+        expect(skills).toContain("TypeScript");
+      });
     });
 
-    const input = screen.getByPlaceholderText("Навык");
-    await user.type(input, "TypeScript");
-    const addBtn = screen.getByRole("button");
-    await user.click(addBtn);
+    it("добавляет навык по Enter с обрезкой пробелов и без дублей", async () => {
+      const user = userEvent.setup();
+      const { router } = renderApp("/vacancies/moscow?skills=React");
 
-    await waitFor(() => {
-      expect(screen.getByText("TypeScript")).toBeInTheDocument();
-    });
-    expect(store.getState().jobsReducer.skills).toContain("TypeScript");
-  });
+      await screen.findByText("Junior Frontend Developer");
 
-  it("Навык должен добавляться по нажатию Enter", async () => {
-    const user = userEvent.setup();
-    const { store } = customRender(<JobsFilters />, {
-      preloadedState: {
-        jobsReducer: {
-          jobsList: [],
-          searchQuery: null,
-          skills: [],
-          city: "Все города",
-          isLoading: false,
-          error: null,
-        },
-      },
-    });
+      const skillInput = screen.getByPlaceholderText("Навык");
 
-    const input = screen.getByPlaceholderText("Навык") as HTMLInputElement;
-    await user.type(input, "Redux{enter}");
+      await user.type(skillInput, "  TypeScript  {enter}");
 
-    await waitFor(() => {
-      expect(screen.getByText("Redux")).toBeInTheDocument();
-    });
-    expect(store.getState().jobsReducer.skills).toContain("Redux");
-  });
+      await waitFor(() => {
+        const skills = getSearchParams(
+          router.state.location.search,
+        ).getAll("skills");
 
-  it("Пустой ввод не должен приводить к изменению состояния", async () => {
-    const user = userEvent.setup();
-    const { store } = customRender(<JobsFilters />, {
-      preloadedState: {
-        jobsReducer: {
-          jobsList: [],
-          searchQuery: null,
-          skills: ["React"],
-          city: "Все города",
-          isLoading: false,
-          error: null,
-        },
-      },
+        expect(skills).toEqual(["React", "TypeScript"]);
+      });
+
+      await user.type(skillInput, "TypeScript{enter}");
+
+      await waitFor(() => {
+        const skills = getSearchParams(
+          router.state.location.search,
+        ).getAll("skills");
+
+        expect(skills).toEqual(["React", "TypeScript"]);
+      });
     });
 
-    const input = screen.getByPlaceholderText("Навык") as HTMLInputElement;
-    const initialState = store.getState().jobsReducer.skills;
+    it("не добавляет пустой навык", async () => {
+      const user = userEvent.setup();
+      const { router } = renderApp("/vacancies/moscow?skills=React");
 
-    await user.clear(input);
-    await user.type(input, "   ");
-    await user.click(screen.getByRole("button"));
+      await screen.findByText("Junior Frontend Developer");
 
-    const finalState = store.getState().jobsReducer.skills;
-    expect(finalState).toEqual(initialState);
-  });
+      await user.type(screen.getByPlaceholderText("Навык"), "   ");
+      await user.click(
+        screen.getByRole("button", { name: "Добавить навык" }),
+      );
 
-  it("Нажатие по кнопке удаления должно приводить к удалению навыка", async () => {
-    const user = userEvent.setup();
-    const { store } = customRender(<JobsFilters />, {
-      preloadedState: {
-        jobsReducer: {
-          jobsList: [],
-          searchQuery: null,
-          skills: ["JavaScript", "React", "Redux"],
-          city: "Все города",
-          isLoading: false,
-          error: null,
-        },
-      },
+      await waitFor(() => {
+        const skills = getSearchParams(
+          router.state.location.search,
+        ).getAll("skills");
+
+        expect(skills).toEqual(["React"]);
+      });
     });
 
-    const reactPill = screen.getByText("React");
-    const pillElement = reactPill.closest("li");
-    if (pillElement) {
-      const removeBtn = pillElement.querySelector("button");
-      if (removeBtn) {
-        await user.click(removeBtn);
-      }
-    }
+    it("удаляет навык, обновляет список и URL", async () => {
+      const user = userEvent.setup();
+      const { router } = renderApp("/vacancies/moscow?skills=React");
 
-    await waitFor(() => {
-      expect(screen.queryByText("React")).not.toBeInTheDocument();
-    });
-    expect(store.getState().jobsReducer.skills).not.toContain("React");
-    expect(store.getState().jobsReducer.skills).toContain("JavaScript");
-    expect(store.getState().jobsReducer.skills).toContain("Redux");
-  });
-});
+      await screen.findByText("Junior Frontend Developer");
+      expect(
+        screen.queryByText("Senior Python Developer"),
+      ).not.toBeInTheDocument();
 
-describe("Тесты фильтрации по локации", () => {
-  it("Изменение города в селекте должно повлечь изменение соответствующего значения в сторе", async () => {
-    const user = userEvent.setup();
-    const { store } = customRender(<JobsFilters />, {
-      preloadedState: {
-        jobsReducer: {
-          jobsList: [],
-          searchQuery: null,
-          skills: [],
-          city: "Все города",
-          isLoading: false,
-          error: null,
-        },
-      },
-    });
+      await user.click(
+        screen.getByRole("button", { name: "Удалить навык React" }),
+      );
 
-    const selectTrigger = screen.getByRole("combobox");
-    await user.click(selectTrigger);
+      await waitFor(() => {
+        const params = getSearchParams(router.state.location.search);
 
-    await waitFor(() => {
-      expect(screen.getByText("Москва")).toBeInTheDocument();
-    });
-    await user.click(screen.getByText("Москва"));
-
-    await waitFor(() => {
-      expect(store.getState().jobsReducer.city).toBe("Москва");
+        expect(
+          screen.getByText("Senior Python Developer"),
+        ).toBeInTheDocument();
+        expect(params.has("skills")).toBe(false);
+      });
     });
   });
 
-  it("При выборе селекта 'Все города', значение в сторе должно соответствовать", async () => {
-    const user = userEvent.setup();
-    const { store } = customRender(<JobsFilters />, {
-      preloadedState: {
-        jobsReducer: {
-          jobsList: [],
-          searchQuery: null,
-          skills: [],
-          city: "Москва",
-          isLoading: false,
-          error: null,
-        },
-      },
+  describe("Города", () => {
+    it("переключает город, фильтрует список и сохраняет фильтры", async () => {
+      const user = userEvent.setup();
+      const { router } = renderApp(
+        "/vacancies/moscow?searchQuery=Developer&skills=React",
+      );
+
+      await screen.findByText("Junior Frontend Developer");
+
+      const moscowTab = screen.getByRole("tab", { name: "Москва" });
+      const petersburgTab = screen.getByRole("tab", {
+        name: "Санкт-Петербург",
+      });
+
+      expect(moscowTab).toHaveAttribute("aria-selected", "true");
+      expect(petersburgTab).toHaveAttribute("aria-selected", "false");
+      expect(
+        screen.queryByText("Middle React Developer"),
+      ).not.toBeInTheDocument();
+
+      await user.click(petersburgTab);
+
+      await waitFor(() => {
+        expect(router.state.location.pathname).toBe("/vacancies/petersburg");
+        expect(
+          screen.getByText("Middle React Developer"),
+        ).toBeInTheDocument();
+        expect(
+          screen.queryByText("Junior Frontend Developer"),
+        ).not.toBeInTheDocument();
+      });
+
+      expect(petersburgTab).toHaveAttribute("aria-selected", "true");
+      expect(moscowTab).toHaveAttribute("aria-selected", "false");
+
+      const params = getSearchParams(router.state.location.search);
+      expect(params.get("searchQuery")).toBe("Developer");
+      expect(params.getAll("skills")).toEqual(["React"]);
+      expect(params.has("city")).toBe(false);
     });
 
-    const selectTrigger = screen.getByRole("combobox");
-    await user.click(selectTrigger);
+    it("показывает город из прямого URL", async () => {
+      renderApp("/vacancies/petersburg");
 
-    await waitFor(() => {
-      expect(screen.getByText("Все города")).toBeInTheDocument();
-    });
-    await user.click(screen.getByText("Все города"));
+      const job = await screen.findByText("Middle React Developer");
+      const card = job.closest("li");
 
-    await waitFor(() => {
-      expect(store.getState().jobsReducer.city).toBe("Все города");
+      expect(card).not.toBeNull();
+      expect(within(card as HTMLElement).getByText("Санкт-Петербург")).toBeInTheDocument();
+      expect(
+        screen.getByRole("tab", { name: "Санкт-Петербург" }),
+      ).toHaveAttribute("aria-selected", "true");
+      expect(
+        screen.queryByText("Junior Frontend Developer"),
+      ).not.toBeInTheDocument();
     });
   });
 });

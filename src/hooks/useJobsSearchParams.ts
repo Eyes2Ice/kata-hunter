@@ -5,7 +5,6 @@ import { useTypedDispatch, useTypedSelector } from "@/hooks/redux";
 import { setFiltersFromUrl } from "@/reducers/JobsSlice";
 
 const DEFAULT_SKILLS = ["JavaScript", "React", "Redux", "Python"];
-const DEFAULT_CITY = "Все города";
 
 export function useJobsSearchParams() {
   const dispatch = useTypedDispatch();
@@ -16,15 +15,13 @@ export function useJobsSearchParams() {
     (state) => state.jobsReducer.searchQuery,
   );
   const skills = useTypedSelector((state) => state.jobsReducer.skills);
-  const city = useTypedSelector((state) => state.jobsReducer.city);
 
   const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
     const params = initialSearchParams.current;
 
-    const hasFilters =
-      params.has("searchQuery") || params.has("skills") || params.has("city");
+    const hasFilters = params.has("searchQuery") || params.has("skills");
 
     const nextFilters = hasFilters
       ? {
@@ -34,12 +31,10 @@ export function useJobsSearchParams() {
                 .getAll("skills")
                 .flatMap((value) => value.split(",").filter(Boolean))
             : [],
-          city: params.get("city") || DEFAULT_CITY,
         }
       : {
           searchQuery: null,
           skills: DEFAULT_SKILLS,
-          city: DEFAULT_CITY,
         };
 
     dispatch(setFiltersFromUrl(nextFilters));
@@ -59,14 +54,10 @@ export function useJobsSearchParams() {
       nextParams.append("skills", skill);
     });
 
-    if (city && city !== DEFAULT_CITY) {
-      nextParams.set("city", city);
-    }
-
     if (nextParams.toString() === searchParams.toString()) {
       return;
     }
 
     setSearchParams(nextParams, { replace: true });
-  }, [initialized, searchQuery, skills, city, searchParams, setSearchParams]);
+  }, [initialized, searchQuery, skills, searchParams, setSearchParams]);
 }

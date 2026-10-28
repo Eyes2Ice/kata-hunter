@@ -51,6 +51,14 @@
   font-size: rem(16px);
 }
 
+.jobs__tabs {
+  margin-top: 24px;
+}
+
+.jobs__tabs [role="tablist"]::before {
+  display: none;
+}
+
 .jobs__filters {
   max-width: rem(317px);
   width: 100%;
@@ -116,11 +124,11 @@
   }
 }
 
-.jobs__locations {
+/* .jobs__locations {
   border-radius: rem(12px);
   padding: 24px;
   background-color: #fff;
-}
+} */
 
 .jobs__list {
   justify-content: center;

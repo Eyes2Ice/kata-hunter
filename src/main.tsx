@@ -12,7 +12,6 @@ import {
 } from "@mantine/core";
 import { Provider } from "react-redux";
 import { setupStore } from "./store/store.ts";
-import { HashRouter } from "react-router";
 
 const store = setupStore();
 
@@ -40,9 +39,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider store={store}>
       <MantineProvider theme={theme}>
-        <HashRouter>
-          <App />
-        </HashRouter>
+        <App />
       </MantineProvider>
     </Provider>
   </StrictMode>,

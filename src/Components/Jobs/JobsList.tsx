@@ -18,9 +18,13 @@ import styles from "./Jobs.module.css";
 import { useEffect } from "react";
 import { selectFilteredJobs } from "@/reducers/JobsSelectors";
 
-export default function JobsList() {
+interface JobsListProps {
+  city: string;
+}
+
+export default function JobsList({ city }: JobsListProps) {
   const dispatch = useTypedDispatch();
-  const jobs = useTypedSelector(selectFilteredJobs);
+  const jobs = useTypedSelector((state) => selectFilteredJobs(state, city));
 
   useEffect(() => {
     dispatch(fetchJobs());
@@ -77,7 +81,7 @@ export default function JobsList() {
         })}
       </Stack>
       {useTypedSelector((store) => !store.jobsReducer.isLoading) && (
-        <Pagination total={5} radius="sm" withEdges />
+        <Pagination total={1} radius="sm" withEdges />
       )}
     </Stack>
   );
