@@ -12,7 +12,7 @@ interface JobsProps {
 }
 
 export default function Jobs({ city }: JobsProps) {
-  useJobsSearchParams();
+  const filtersInitialized = useJobsSearchParams();
 
   return (
     <main>
@@ -24,7 +24,7 @@ export default function Jobs({ city }: JobsProps) {
             <JobsLocation />
             <Group className={styles.jobs__body}>
               <JobsSkills />
-              <JobsList city={city} />
+              <JobsList city={city} filtersInitialized={filtersInitialized} />
             </Group>
           </Container>
         </Box>

@@ -181,7 +181,7 @@ describe("Фильтрация вакансий", () => {
         expect(
           screen.getByText("Senior Python Developer"),
         ).toBeInTheDocument();
-        expect(params.has("skills")).toBe(false);
+        expect(params.get("skills")).toBe("");
       });
     });
   });

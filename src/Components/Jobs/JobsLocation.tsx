@@ -1,6 +1,8 @@
 import { Tabs } from "@mantine/core";
 import styles from "./Jobs.module.css";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTypedDispatch } from "@/hooks/redux";
+import { setCurrentPage } from "@/reducers/JobsSlice";
 
 const CITY_ROUTES = {
   moscow: "/vacancies/moscow",
@@ -8,13 +10,19 @@ const CITY_ROUTES = {
 } as const;
 
 export default function JobsLocation() {
+  const dispatch = useTypedDispatch();
   const location = useLocation();
   const navigate = useNavigate();
 
   const currentRoute = location.pathname;
   const handleChange = (value: string | null) => {
     if (!value || value === currentRoute) return;
-    navigate({ pathname: value, search: location.search });
+
+    const nextSearchParams = new URLSearchParams(location.search);
+    nextSearchParams.delete("page");
+
+    dispatch(setCurrentPage(1));
+    navigate({ pathname: value, search: nextSearchParams.toString() });
   };
 
   return (

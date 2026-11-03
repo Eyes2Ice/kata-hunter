@@ -11,29 +11,62 @@ import {
 import { Link } from "react-router-dom";
 import { useTypedDispatch, useTypedSelector } from "@/hooks/redux";
 import { fetchJobs } from "@/reducers/JobsThunk";
+import { setCurrentPage } from "@/reducers/JobsSlice";
 import { SPACE_LABELS } from "./Jobs.types";
 import clsx from "clsx";
 
 import styles from "./Jobs.module.css";
 import { useEffect } from "react";
-import { selectFilteredJobs } from "@/reducers/JobsSelectors";
+import { selectJobs } from "@/reducers/JobsSelectors";
 
 interface JobsListProps {
   city: string;
+  filtersInitialized?: boolean;
 }
 
-export default function JobsList({ city }: JobsListProps) {
+export default function JobsList({
+  city,
+  filtersInitialized = true,
+}: JobsListProps) {
   const dispatch = useTypedDispatch();
-  const jobs = useTypedSelector((state) => selectFilteredJobs(state, city));
+  const jobs = useTypedSelector(selectJobs);
+  const searchQuery = useTypedSelector(
+    (state) => state.jobsReducer.searchQuery,
+  );
+  const skills = useTypedSelector((state) => state.jobsReducer.skills);
+  const currentPage = useTypedSelector(
+    (state) => state.jobsReducer.currentPage,
+  );
+  const totalPages = useTypedSelector(
+    (state) => state.jobsReducer.totalPages,
+  );
+  const isLoading = useTypedSelector(
+    (state) => state.jobsReducer.isLoading,
+  );
 
   useEffect(() => {
-    dispatch(fetchJobs());
-  }, [dispatch]);
+    if (!filtersInitialized) return;
+
+    const promise = dispatch(
+      fetchJobs({ searchQuery, skills, city, page: currentPage }),
+    );
+
+    return () => {
+      promise.abort();
+    };
+  }, [
+    dispatch,
+    filtersInitialized,
+    city,
+    searchQuery,
+    skills,
+    currentPage,
+  ]);
 
   return (
     <Stack style={{ width: "100%", alignItems: "center" }}>
       <Stack className={styles.jobs__list} component="ul">
-        {useTypedSelector((store) => store.jobsReducer.isLoading) && (
+        {isLoading && (
           <Loader
             data-testid="loader"
             color="var(--mantine-color-shemeColor-7)"
@@ -80,9 +113,15 @@ export default function JobsList({ city }: JobsListProps) {
           );
         })}
       </Stack>
-      {useTypedSelector((store) => !store.jobsReducer.isLoading) && (
-        <Pagination total={1} radius="sm" withEdges />
-      )}
+      <Pagination
+        total={Math.max(totalPages, 1)}
+        value={currentPage}
+        onChange={(page) => dispatch(setCurrentPage(page))}
+        radius="sm"
+        withEdges
+        hideWithOnePage
+        disabled={isLoading}
+      />
     </Stack>
   );
 }
